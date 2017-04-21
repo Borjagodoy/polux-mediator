@@ -1,38 +1,93 @@
 # \<polux-mediator\>
 
+## Introduction
 
+In Polymer the comunication between components is one of the main problems at the moment of create complex apps.
 
-## Install the Polymer-CLI
+The disconnection  between brother components, the obligation use of mediator pattern...
+With polux we want to make all components accesible from any other component without matter in what level of the DOM are.
 
-First, make sure you have the [Polymer CLI](https://www.npmjs.com/package/polymer-cli) installed. Then run `polymer serve` to serve your application locally.
+Polux-mediator will have all the instances component references in the app allowing the access to other components via events.
 
-## Viewing Your Application
+## How it works
 
-```
-$ polymer serve
-```
+polux-mediator will stay at the top level of our app jerarchy and every of our app components will dispatch in his ready lifecycle callback an init event passing his reference at the detail.
 
-## Building Your Application
+This will save it in our polux-mediator component and make possible the access dispatching an use-component event. This event will have a parameters that will explain later on.
 
-```
-$ polymer build
-```
+Depend on the parameters we pass it the component will have a comunication type or another.
 
-This will create a `build/` folder with `bundled/` and `unbundled/` sub-folders
-containing a bundled (Vulcanized) and unbundled builds, both run through HTML,
-CSS, and JS optimizers.
+## Usage
 
-You can serve the built versions by giving `polymer serve` a folder to serve
-from:
+Install the component
 
-```
-$ polymer serve build/bundled
+```bash
+  $ bower install --save https://github.com/Borjagodoy/polux-mediator.git
 ```
 
-## Running Tests
+Import the component to your app
 
-```
-$ polymer test
+```html
+  <link rel="import" href="/bower_components/polux-mediator/polux-mediator.html">
 ```
 
-Your application is already set up to be tested via [web-component-tester](https://github.com/Polymer/web-component-tester). Run `polymer test` to run your application's test suite locally.
+Use component in your index.html app
+
+```html
+  <polux-mediator></polux-mediator>
+```
+
+In this first version you will have to put in the ready lifecycle callback of your component the event that will registry at the polux
+
+```js
+  ready() {
+    super.ready();
+    this.dispatchEvent(new CustomEvent('init', {
+      bubbles: true,
+      composed: true,
+      detail: {
+          reference: this
+      }
+    }));
+  }
+```
+
+For the use of components storage at the polux you have three comunication ways:
+
+ 1. Execute a function from another component
+```js
+this.dispatchEvent(new CustomEvent('use-component', {
+   bubbles: true,
+   composed: true,
+   detail: {
+       componentToUse: 'name-of-component-to-use',
+       task: 'name-of-function-to-use',
+       value: 'function-parameter-to-use' // not required
+   }
+  }));
+```
+ 2. Modify a property of another component
+```js
+this.dispatchEvent(new CustomEvent('use-component', {
+    bubbles: true,
+    composed: true,
+    detail: {
+        componentToUse: 'name-of-component-to-use',
+        property: 'name-of-property-to-modify',
+        value: 'new-property-value'
+    }
+  }));
+```
+  3. Modify the property of the component who dispatch the event using another component function
+```js
+this.dispatchEvent(new CustomEvent('use-component', {
+    bubbles: true,
+    composed: true,
+    detail: {
+        componentFrom: 'component-dispatch-event',
+        componentToUse: 'name-of-component-to-use',
+        task: 'name-of-function-to-use',
+        propertyFrom: 'name-of-property-from-componentFrom-to-modify',
+    }
+  }));
+```  
