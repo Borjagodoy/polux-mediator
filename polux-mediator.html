@@ -14,7 +14,6 @@
         display: block;
       }
     </style>
-    <h2>Hello [[prop1]]</h2>
   </template>
 
     <script>
@@ -31,15 +30,16 @@
                 };
             }
             ready() {
+                window.addEventListener('init', this._newComponent.bind(this));
+                window.addEventListener('use-component', this._useComponent.bind(this));
                 super.ready();
-                this.addEventListener('init', e => this._newComponent(e));
-                this.addEventListener('change-component', e => this._changeComponent(e));
-                this.addEventListener('use-component', e => this._useComponent(e));
 
             }
 
             _newComponent(e)  {
-                console.log('new component', e);
+                let component = e.detail.reference;
+                console.log('new component', e.detail.reference.text);
+                this.componentsReferences[component.tagName] = component;
             }
 
             _changeComponent(e) {
@@ -47,9 +47,23 @@
             }
 
             _useComponent(e) {
-                console.log('use component', e);
-            }
+                let componentToUse = e.detail.componentToUse,
+                    task = e.detail.task,
+                    property = e.detail.property,
+                    propertyFrom = e.detail.propertyFrom,
+                    componentFrom = e.detail.componentFrom;
 
+                console.log('use component', componentToUse);
+                if (task && !propertyFrom) {
+                    this.componentsReferences[componentToUse][task]();
+                } else {
+                    if (task && propertyFrom) {
+                        this.componentsReferences[componentFrom][propertyFrom] = this.componentsReferences[componentToUse][task]();
+                    } else {
+                        this.componentsReferences[componentToUse][property] = e.detail.value;
+                    }
+                }
+            }
         }
 
         window.customElements.define(PoluxMediator.is, PoluxMediator);
