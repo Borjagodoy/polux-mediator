@@ -1,0 +1,57 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<!--
+`polux-mediator`
+
+
+@demo demo/index.html
+-->
+
+<dom-module id="polux-mediator">
+    <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <h2>Hello [[prop1]]</h2>
+  </template>
+
+    <script>
+        class PoluxMediator extends Polymer.Element {
+            static get is() {
+                return 'polux-mediator';
+            }
+            static get properties() {
+                return {
+                    componentsReferences: {
+                        type: Object,
+                        value: {}
+                    }
+                };
+            }
+            ready() {
+                super.ready();
+                this.addEventListener('init', e => this._newComponent(e));
+                this.addEventListener('change-component', e => this._changeComponent(e));
+                this.addEventListener('use-component', e => this._useComponent(e));
+
+            }
+
+            _newComponent(e)  {
+                console.log('new component', e);
+            }
+
+            _changeComponent(e) {
+                console.log('change compoennt', e);
+            }
+
+            _useComponent(e) {
+                console.log('use component', e);
+            }
+
+        }
+
+        window.customElements.define(PoluxMediator.is, PoluxMediator);
+    </script>
+</dom-module>

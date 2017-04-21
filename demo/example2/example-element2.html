@@ -1,0 +1,78 @@
+<link rel="import" href="../polymer/polymer-element.html">
+<!--<link rel="import" href="../polymer/lib/elements/dom-if.html">-->
+<!--<link rel="import" href="../polymer/lib/elements/dom-repeat.html">-->
+
+<!--
+`example-element`
+
+
+@demo demo/index.html
+-->
+
+<dom-module id="example2-element">
+    <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <h2>Hello [[prop1]]!</h2>
+    <button on-tap="changeProperty2"> Change Property 2 for Property 1</button>
+    <button on-tap="changeProperty1"> Change Property 1 from example2</button>
+  </template>
+
+    <script>
+        /** @polymerElement */
+        class ExampleElement2 extends Polymer.GestureEventListeners(Polymer.Element) {
+            static get is() {
+                return 'example-element';
+            }
+            static get properties() {
+                return {
+                    prop1: {
+                        type: String,
+                        value: 'example-element'
+                    }
+                };
+            }
+
+            ready() {
+                super.ready();
+                this.dispatchEvent(new CustomEvent('init', {
+                    bubbles: true,
+                    composed: true,
+                    detail: {
+                        reference: this
+                    }
+                }));
+            }
+
+            changeProperty2() {
+                this.dispatchEvent(new CustomEvent('use-component', {
+                    bubbles: true,
+                    composed: true,
+                    detail: {
+                        componentFrom: 'EXAMPLE2-ELEMENT',
+                        componentToUse: 'EXAMPLE-ELEMENT',
+                        task: 'getProp1',
+                        propertyFrom: 'prop2'
+                    }
+                }));
+            }
+
+            changeProperty1() {
+                this.dispatchEvent(new CustomEvent('use-component', {
+                    bubbles: true,
+                    composed: true,
+                    detail: {
+                        componentToUse: 'EXAMPLE-ELEMENT',
+                        property: 'prop1',
+                        value: 'Change property from component example 2'
+                    }
+                }));
+            }
+        }
+
+        window.customElements.define(ExampleElement2.is, ExampleElement2);
+    </script>
+</dom-module>

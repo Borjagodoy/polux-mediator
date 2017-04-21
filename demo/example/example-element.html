@@ -1,0 +1,59 @@
+<link rel="import" href="../polymer/polymer-element.html">
+<!--<link rel="import" href="../polymer/lib/elements/dom-if.html">-->
+<!--<link rel="import" href="../polymer/lib/elements/dom-repeat.html">-->
+
+<!--
+`example-element`
+
+
+@demo demo/index.html
+-->
+
+<dom-module id="example-element">
+    <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <h2>Hello [[prop1]]!</h2>
+  </template>
+
+    <script>
+        /** @polymerElement */
+        class ExampleElement extends Polymer.Element {
+            static get is() {
+                return 'example-element';
+            }
+            static get properties() {
+                return {
+                    prop1: {
+                        type: String,
+                        value: 'example-element'
+                    }
+                };
+            }
+
+            ready() {
+                super.ready();
+                this.dispatchEvent(new CustomEvent('init', {
+                    bubbles: true,
+                    composed: true,
+                    detail: {
+                        reference: this
+                    }
+                }));
+            }
+
+            setProp1() {
+                this.set('prop1', 'SeteandoPropiedad1')
+            }
+
+            getProp1() {
+                return this.prop1;
+            }
+        }
+
+        window.customElements.define(ExampleElement.is, ExampleElement);
+    </script>
+</dom-module>
