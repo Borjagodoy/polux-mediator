@@ -38,7 +38,7 @@
 
             _newComponent(e)  {
                 let component = e.detail.reference;
-                console.log('new component', e.detail.reference.text);
+                console.log('new component', e.detail.reference.tagName);
                 this.componentsReferences[component.tagName] = component;
             }
 
